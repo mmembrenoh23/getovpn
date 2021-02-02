@@ -1,15 +1,15 @@
 @extends('shared.app')
 
-@section('title', $server_name)
+@section('title_site', $server_name)
 
 
 @section('htmlheader')
     <div class="content-header-left col-md-4 col-12 mb-2">
         <h3 class="content-header-title">{{ $server_name }}</h3>
-    </div>   
+    </div>
     <div class="content-header-right col-md-8 col-12">
         <div class="form-group float-md-right">
-            <button type="button" class="btn btn-secondary mr-1"><i class="ft-arrow-left"></i></button>
+            <button type="button" class="btn btn-secondary mr-1" id="btnBack" data-route="{{ route('servers')}}"><i class="ft-arrow-left"></i></button>
         </div>
     </div>
 @endsection
@@ -18,11 +18,11 @@
 
 <div class="row match-height">
     @foreach ($files as $item)
-        <div class="col-lg-3 col-md-12">
-            <div class="card" data-id="{{ $item['id'] }}">
+        <div class="col-lg-4 col-md-12">
+            <div class="card file-list" >
                 <div class="card-body">
                     <h3 class="card-title">{{ $item['file_name'] }}</h3>
-                    
+
                     <div class="d-flex justify-content-center">
                         <i class="ft-file-text display-1"></i>
                         <ul>
@@ -33,23 +33,20 @@
                                 Created: {{ $item['file_created'] }}
                             </li>
                             <li>
-                              Owner: {{ $item['owner'] }}
+                              Owner: {{ $item['file_owner'] }}
                             </li>
                         </ul>
                     </div>
                 </div>
                 <div class="card-footer border-top-blue-grey border-top-lighten-5 text-muted">
                     <span>
-                        <a href="#" class="card-link" title="Editar atributos" data-toggle="modal" data-target="#mEditar">
-                            <i class="la la-edit"></i>
+                        <a href="{{ route('download-file',['file_id'=> $item['file_id']])}}" class="card-link" id="btnDownload">
+                            <i class="la la-cloud-download" title="Download" ></i>
                         </a>
-                        <a href="#" class="card-link">
-                            <i class="la la-cloud-download" title="Download"></i>
-                        </a>
-                        <a href="#" class="card-link" title="Secret" data-toggle="modal" data-target="#mGenerarSecret">
+                        <a href="#" class="card-link" title="Secret" data-route="{{ route('gen-secret',['file_id'=> $item['file_id']])}}" data-toggle="modal" data-target="#mGenerarSecret" id="btnGenerarSecret">
                             <i class="la la-key"></i>
                         </a>
-                        <a href="#" class="card-link" title="Obtener Link">
+                        <a href="#" class="card-link" title="Get Link" id="btnGetLink" data-route="{{ route('voip-link-download',['file_id'=> $item['file_id']])}}">
                             <i class="la la-globe"></i>
                         </a>
                     </span>
@@ -57,10 +54,13 @@
             </div>
         </div>
     @endforeach
-    
+
 </div>
-    
+
+@include('admin.servers.load-secret-modal')
 @endsection
 
-@include('admin.servers.edit-modal')
-@include('admin.servers.load-secret-modal')
+
+@push('scripts')
+    <script src="{{ asset('assets/js/server.js') }}"></script>
+@endpush

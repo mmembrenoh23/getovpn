@@ -1,15 +1,11 @@
-<head>
-    @csrf
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta name="description"
         content="Application made of Laravel to admin vpn files and allows some user to download with a token">
     <meta name="keywords"
         content="VPN, laravel, app">
     <meta name="author" content="Data Protection – IT4Canada">
-      
-    <title>{{  config('app.name') }} - @yield('title_site',"")</title>
+
     <link rel="apple-touch-icon" href="{{ asset('theme-assets/images/logo-alt-300x65.png')}}">
     <link rel="shortcut icon" type="image/x-icon" href="theme-assets/images/logo-alt-300x65.png">
     <link
@@ -30,12 +26,10 @@
     <link rel="stylesheet" type="text/css" href="{{asset('theme-assets/css/pages/dashboard-ecommerce.css')}}">
     <link href="{{asset('theme-assets/vendors/css/select2/select2.min.css')}}" rel="stylesheet" />
     <link rel="stylesheet" href="{{asset('theme-assets/vendors/css/tables/datatable/jquery.dataTables.min.css')}}" type="text/css">
-	
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" type="text/css">
     <!-- END Page Level CSS-->
     <!-- BEGIN Custom CSS-->
     <link rel="stylesheet" href="{{asset('assets/css/style.css')}}" type="text/css">
     @stack('css')
     <!-- END Custom CSS-->
 
-</head>
-  <!-- END: Head-->

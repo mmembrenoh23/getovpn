@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Servers extends Model
 {
-    public function servers(){
-        return $this->hasMany(Server::class);
+    protected $filliable=['path','server_name'];
+    public function files(){
+        return $this->hasMany(Server::class,'server_id');
     }
 }

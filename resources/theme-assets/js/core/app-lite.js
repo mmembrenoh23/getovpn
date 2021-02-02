@@ -182,11 +182,6 @@
             $(this).parent().children(".heading-elements").toggleClass("visible");
         });
 
-        //  Dynamic height for the chartjs div for the chart animations to work
-        var chartjsDiv = $('.chartjs'),
-            canvasHeight = chartjsDiv.children('canvas').attr('height');
-        chartjsDiv.css('height', canvasHeight);
-
         if ($body.hasClass('boxed-layout')) {
             if ($body.hasClass('vertical-overlay-menu') || $body.hasClass('vertical-compact-menu')) {
                 var menuWidth = $('.main-menu').width();

@@ -23,13 +23,13 @@ class LoginController extends Controller
     public function adminLogin(Request $request)
     {
         $credentials = $request->only(['username','password']);
-        
-        
+
+
         $this->validate($request, [
             'username'   => 'required',
             'password' => 'required|min:6'
         ]);
-       
+
         if (Auth::guard('admin')->attempt(['username' => $credentials['username'], 'password' =>  $credentials['password']])) {
             return  redirect()
             ->intended(route('servers'));
@@ -48,6 +48,6 @@ class LoginController extends Controller
             ->with('status','Admin has been logged out!');
     }
 
-    
+
 }
 
