@@ -29,3 +29,4 @@
     @include('shared.footer')
     @include('shared.scripts')
 </body>
+</html>

@@ -4,80 +4,126 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use App\Exceptions\AdminException;
 
 use App\Model\Servers;
 use App\Model\Server;
 
+use App\Jobs\LogsApplication ;
 
-//use App\Jobs\ProcessServers ;
-use App\Jobs\ProcessVPNFiles ;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class ServersController extends Controller
 {
-    private $server_main_path = "C:\\Server";
 
     public function __construct(){
        $this->middleware('auth:admin');
-      // ProcessServers::dispatch($this->server_main_path);
     }
 
     //get all servers (folders)
     public function index(){
+        try {
+            $_directories=Servers::paginate(12);
+            $request = request()->only('q');
+s;
+            $message="Get all directories from database";
 
-        $_directories=$this->showDir();
+            if(isset($request['q'])){
+                if(!Str::of($request['q'])->contains('reset')){
+                    $_directories=Servers::where( 'server_name', 'like', '%' .$request['q']. '%')->paginate(12)->withPath(route('servers',['q'=>$request['q']]));
+                    $message="Get all directories with a search term {$request['q']} ";
+                }
+            }
 
-        return view("admin.servers.servers",["dir"=> $_directories]);
+            LogsApplication::dispatch("ServersController","index-show",$message,Auth::guard('admin')->user()->id);
+            ///  ->onQueue('processing');
+
+            return view("admin.servers.servers",["dir"=> $_directories]);
+        } catch (Exception $th) {
+
+            $message=serialize(["line"=>$th->getLine(),
+                      "file"=>$th->getFile(),
+                    "message"=>$th->getMessage()]);
+
+            LogsApplication::dispatch("ServersController","index-show",$message,Auth::guard('admin')->user()->id);
+
+            throw new AdminException($th->getMessage());
+        }
     }
 
 
     public function getServerFiles($server_id){
+        try {
+            $server_id = base64_decode($server_id);
+            $_files=$this->showDirFiles($server_id);
+            $server_path=$_files['server_name'];
 
-        /*$this->validate(request(), [
-            'server_path' => 'required'
-        ]);
-        */
-        $server_id = base64_decode($server_id);
-        $_files=$this->showDirFiles($server_id);
-        $server_path=$_files['server_name'];
+            $message ="get server files ({$_files['server_name']}). Total Files ".(count($_files));
 
-        unset($_files['server_name']);
+            unset($_files['server_name']);
 
-        return view('admin.servers.server',['files'=>$_files,'server_name'=>$server_path]);
+            LogsApplication::dispatch("ServersController","getServerFiles",$message,Auth::guard('admin')->user()->id);
+
+            return view('admin.servers.server',['files'=>$_files,'server_name'=>$server_path]);
+        }  catch (Exception $th) {
+
+            $message=serialize(["line"=>$th->getLine(),
+                      "file"=>$th->getFile(),
+                    "message"=>$th->getMessage()]);
+
+
+            LogsApplication::dispatch("ServersController","getServerFiles",$message,Auth::guard('admin')->user()->id);
+
+             throw new AdminException($th->getMessage());
+        }
 
     }
 
     public function generetSecret($file_id){
 
         if(request()->ajax()){
-            $file_id = base64_decode($file_id);
+            try {
+                $file_id = base64_decode($file_id);
 
-            $token= $this->getTokenSecret();
+                $token= $this->getTokenSecret();
 
-            $file = Server::find($file_id);
+                $file = Server::find($file_id);
 
-            $file->secret = $token;
+                $file->secret = $token;
 
-            \Log::Info("token $token");
-            \Log::Info("ID $file_id");
+                \Log::Info("token $token");
+                \Log::Info("ID $file_id");
 
-            if($file->save()){
+                if($file->save()){
+
+                    LogsApplication::dispatch("ServersController","generetSecret","Secret $token saved at file: {$file->name} ",Auth::guard('admin')->user()->id);
+
+                    return response()->json([
+                        "error"=>0,
+                        "message"=>"The secret was created",
+                        "secret" => "$token"
+                    ]);
+                }
+
+                LogsApplication::dispatch("ServersController","generetSecret","An error was occurred. Token: $token, file: {$file->name} ",Auth::guard('admin')->user()->id);
+
                 return response()->json([
-                    "error"=>0,
-                    "message"=>"The secret was created",
-                    "secret" => "$token"
-                ]);
+                        "error"=>1,
+                        "message"=>"An error was occurred"]);
+
+            } catch (\Throwable $th) {
+                $message=serialize(["line"=>$th->getLine(),
+                      "file"=>$th->getFile(),
+                    "message"=>$th->getMessage()]);
+
+
+                LogsApplication::dispatch("ServersController","generetSecret",$message,Auth::guard('admin')->user()->id);
+
+                throw new AdminException($th->getMessage());
             }
-
-            return response()->json([
-                    "error"=>1,
-                    "message"=>"An error was occurred"]);
-
-        }
-        else{
-          \Log::warning($e->getMessage());
-            throw new Exception($e->getMessage(), 1);
         }
     }
 
@@ -88,9 +134,15 @@ class ServersController extends Controller
 
             return response()->download($this->copyFiletoDownload($_file_id));
 
-        } catch (Exception $e) {
-            \Log::warning($e->getMessage());
-            throw new Exception($e->getMessage(), 1);
+        }  catch (Exception $th) {
+
+            $message=serialize(["line"=>$th->getLine(),
+                      "file"=>$th->getFile(),
+                    "message"=>$th->getMessage()]);
+
+            LogsApplication::dispatch("ServersController","getDownloadFile",$message,Auth::guard('admin')->user()->id);
+
+             throw new AdminException($th->getMessage());
         }
 
     }
@@ -108,10 +160,10 @@ class ServersController extends Controller
                  \Log::Info("secret {$file_server->secret}");
 
                 if($file_server->secret != null){
-                    $path=$file_server->path;
-                    $path_ = pathinfo($path);
                     $file_path=$file_server->url_download = route('voip-file-download',['secret'=>$file_server->secret]);
                     $file_server->save();
+
+                     LogsApplication::dispatch("ServersController","generateLink","Link to download file was generated. ".(route('voip-file-download',['secret'=>$file_server->secret])),Auth::guard('admin')->user()->id);
 
                     return response()->json([
                         "error"=>0,
@@ -120,6 +172,8 @@ class ServersController extends Controller
                     ]);
                 }
 
+                LogsApplication::dispatch("ServersController","generateLink","Try to generate link to download file but the secret key doesn't exists",Auth::guard('admin')->user()->id);
+
                 return  response()->json([
                         "error"=>1,
                         "message"=>"Please generate the secret key"
@@ -127,13 +181,41 @@ class ServersController extends Controller
 
 
             } catch (Exception $e) {
-                \Log::warning($e->getMessage());
+                $message=serialize(["line"=>$e->getLine(),
+                      "file"=>$e->getFile(),
+                    "message"=>$e->getMessage()]);
+
+                 LogsApplication::dispatch("ServersController","generateLink",$message,Auth::guard('admin')->user()->id);
+
                 throw new Exception($e->getMessage(), 1);
             }
         }
         else{
 
         }
+    }
+
+
+    public function searchServer($query){
+        if(request()->ajax()){
+            try {
+
+                \Log::info(Str::of($query)->contains('reset'));
+
+                if(Str::of($query)->contains('reset')){
+                    return view('admin.servers.search-server',['dir'=> Servers::paginate(12)->withPath(route('servers',['q'=>$query]))]);
+                }
+                else{
+                    $server =Servers::where( 'server_name', 'like', '%' .$query. '%')->paginate(12)->withPath(route('servers',['q'=>$query]));
+                    return view('admin.servers.search-server',['dir'=>  $server]);
+                }
+
+
+            } catch (\Throwable $th) {
+                throw new Exception($th->getMessage());
+            }
+        }
+
     }
 
     private function copyFiletoDownload($_file_id){
@@ -154,6 +236,9 @@ class ServersController extends Controller
 
         $file =public_path("files\\{$path_['basename']}");
 
+        LogsApplication::dispatch("ServersController","getDownloadFile -> copyFiletoDownload",
+        "Download File: {$file_server->name} ",Auth::guard('admin')->user()->id);
+
         return $file;
     }
     private function getTokenSecret(){
@@ -169,20 +254,6 @@ class ServersController extends Controller
 
         return \Hash::make($result);
     }
-
-    private function showDir(){
-        $servers =[];
-
-        foreach(Servers::all() as $server){
-            $servers[]= [
-                    'id'=>base64_encode($server->id),
-                    'dir_name'=>$server->server_name,
-                    'dir_path'=>$server->path
-            ];
-        }
-
-        return $servers;
-     }
 
      private function showDirFiles($_server_id){
 

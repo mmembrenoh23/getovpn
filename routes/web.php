@@ -33,6 +33,7 @@ Route::middleware(['auth','preventBackHistory'])->group(function () {
     Route::get('server/{file_id}/download','ServersController@getDownloadFile')->name('download-file');
 
     Route::get('server/{file_id}/link',"ServersController@generateLink")->name('voip-link-download');
+    Route::get('server/search/{query}',"ServersController@searchServer")->name('search-server');
 
     Route::get('config/server', function(){
         return view("admin.config.servers.servers");

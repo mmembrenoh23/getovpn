@@ -50,6 +50,15 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+
+        if ($exception instanceof \App\Exceptions\CustomException)  {
+            return $exception->render($request);
+        }
+
+        if ($exception instanceof \App\Exceptions\AdminException)  {
+            return $exception->render($request);
+        }
+
         return parent::render($request, $exception);
     }
 }

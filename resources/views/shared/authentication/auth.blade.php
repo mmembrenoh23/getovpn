@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <!-- saved from url=(0099)https://themeselection.com/demo/chameleon-admin-template/html/ltr/vertical-menu-template/login.html -->
-<html class="loaded" lang="en" data-textdirection="ltr"><!-- BEGIN: Head--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html class="loaded" lang="en" data-textdirection="ltr">
+    <!-- BEGIN: Head-->
+    <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -54,7 +56,7 @@
           <div class="content-header row">
           </div>
           <div class="content-body">
-              
+
             <section class="flexbox-container">
                 <div class="col-12 d-flex align-items-center justify-content-center">
                     <div class="col-lg-4 col-md-6 col-10 box-shadow-2 p-0">
@@ -64,33 +66,33 @@
                     </div>
                 </div>
             </section>
-  
+
           </div>
         </div>
       </div>
       <!-- END: Content-->
-  
-  
+
+
       <!-- BEGIN: Vendor JS-->
       <script src="{{asset('theme-assets/vendors/js/vendors.min.js')}}" type="text/javascript"></script>
       <script src="{{asset('theme-assets/vendors/js/forms/toggle/switchery.min.js')}}" type="text/javascript"></script>
       <script src="{{asset('theme-assets/vendors/js/forms/toggle/switch.min.js')}}" type="text/javascript"></script>
       <!-- BEGIN Vendor JS-->
-  
+
       <!-- BEGIN: Page Vendor JS-->
       <script src="{{asset('theme-assets/vendors/js/forms/validation/jqBootstrapValidation.js')}}" type="text/javascript"></script>
       <!-- END: Page Vendor JS-->
-  
+
       <!-- BEGIN: Theme JS-->
       <script src="{{asset('theme-assets/vendors/js/core/app-menu.min.js')}}" type="text/javascript"></script>
       <script src="{{asset('theme-assets/vendors/js/core/app.min.js')}}" type="text/javascript"></script>
       <!-- END: Theme JS-->
-  
+
       <!-- BEGIN: Page JS-->
       <script src="{{asset('theme-assets/vendors/js/core/form-login-register.min.js')}}" type="text/javascript"></script>
       <!-- END: Page JS-->
-  
-    
+
+
     <!-- END: Body-->
   </body>
 </html>

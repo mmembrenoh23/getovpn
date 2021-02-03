@@ -17,12 +17,12 @@
             data-toggle="dropdown" href="#"><i class="ficon ft-search"></i></a>
         <ul class="dropdown-menu">
             <li class="arrow_box">
-                <form>
+                <form method="GET" id="search-box">
                     <div class="input-group search-box">
                         <div class="position-relative has-icon-right full-width">
                             <input class="form-control" id="search" type="text"
-                                placeholder="Search here...">
-                            <div class="form-control-position navbar-search-close"><i class="ft-x">
+                                placeholder="Search here..."  data-route="{{ route('search-server',['query'=>'?']) }}" >
+                            <div class="form-control-position navbar-search-close" data-route="{{ route('search-server',['query'=>'?']) }}"><i class="ft-x">
                                 </i></div>
                         </div>
                     </div>
@@ -42,20 +42,9 @@
 
 @section('content')
 
-<div class="row match-height">
-    @foreach ($dir as $item)
-        <div class="col-lg-3 col-md-12">
-            <div class="card server"  data-route="{{ route('server',['server_id'=>$item['id']]) }}">
-                <div class="card-body">
-                    <h4 class="card-title">{{ $item['dir_name'] }}</h4>
-                </div>
-                <div class="card-body">
-                    <i class="ft-server display-1"></i>
-                </div>
 
-            </div>
-        </div>
-    @endforeach
+<div class="row match-height">
+    @include('admin.servers.search-server', ['dir'=>$dir])
 
 </div>
 
@@ -63,7 +52,7 @@
 
 @push("scripts")
     <script>
-        $(".server.card").on("click",function(e){
+        $(".row.match-height").on("click",".server.card",function(e){
             e.preventDefault();
 
             var $data = $(this).data();
@@ -71,6 +60,69 @@
             window.location=$data.route;
         });
 
+        $("#search-box").on("input", "#search", function(e) {
+            e.preventDefault();
+            var $route =  $(this).data('route');
+
+            var $query= $(this).val();
+
+            if($.trim($query.length) == 0){
+             return false;
+            }
+             $route=  $route.replace('?',$query);
+
+            try {
+                App._urlToSend=$route;
+                App._data=null;
+                App._method="GET";
+                App._dataType = "HTML";
+
+                App._beforeSend = $(".row.match-height");
+
+                $.when(App.fnSendData())
+                    .done(function($_resultado) {
+
+                     $(".row.match-height").html($_resultado);
+
+                }).fail(function(errorThrown){
+                    var message=errorThrown.responseJSON.errors+" "+errorThrown.responseJSON.message;
+                    toastr.error(message);
+                });
+
+            } catch (error) {
+                toastr.error(error.message);
+            }
+        }).on("click",".navbar-search-close",function(e){
+            e.preventDefault();
+
+            var $route =  $(this).data('route');
+            $route=  $route.replace('?','reset');
+            try {
+                App._urlToSend=$route;
+                App._data=null;
+                App._method="GET";
+                App._dataType = "HTML";
+
+                App._beforeSend = $(".row.match-height");
+
+                $.when(App.fnSendData())
+                    .done(function($_resultado) {
+
+                     $(".row.match-height").html($_resultado);
+                     $(e.delegateTarget).find("#search").val("");
+
+                }).fail(function(errorThrown){
+                    var message=errorThrown.responseJSON.errors+" "+errorThrown.responseJSON.message;
+                    toastr.error(message);
+                });
+
+            } catch (error) {
+                toastr.error(error.message);
+            }
+        });
+
     </script>
+
+    <script src="{{ asset('theme-assets/vendors/js/pagination/pagination.js')}}"></script>
 
 @endpush

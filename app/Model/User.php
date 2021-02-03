@@ -34,6 +34,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        
+
     ];
+
+    public function logApp(){
+        return $this->hasMany(LogApp::class);
+    }
 }
