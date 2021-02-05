@@ -41,17 +41,18 @@ class LogsApplication implements ShouldQueue
     public function handle()
     {
        $log = new LogApp();
-
+        \Log::info("LogsApplication -> handle -> {$this->_window},  {$this->_action},  {$this->_message},  {$this->_user_id}");
        $log->window = $this->_window;
        $log->action = $this->_action;
        $log->message = $this->_message;
        $log->user_id = $this->_user_id;
 
        if($log->save()){
-            \Log::info("salvado");
+
+            \Log::info("LogsApplication -> handle -> saved {$log->id}");
            return 1;
        }
- \Log::info("no salvado");
+        \Log::info("no salvado");
        return -1;
 
     }

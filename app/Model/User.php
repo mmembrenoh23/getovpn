@@ -40,4 +40,8 @@ class User extends Authenticatable
     public function logApp(){
         return $this->hasMany(LogApp::class);
     }
+
+    public function logFileDownload(){
+        return $this->belongsToMany(LogFile::class, 'log_file_user', 'user_id', 'logs_download_file_id');
+    }
 }

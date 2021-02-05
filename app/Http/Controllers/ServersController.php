@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use App\Exceptions\AdminException;
+use Browser;
 
 use App\Model\Servers;
 use App\Model\Server;
 
-use App\Jobs\LogsApplication ;
 
+use App\Jobs\LogsApplication ;
+use App\Jobs\LogsFileDownload;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Exception;
@@ -28,7 +30,7 @@ class ServersController extends Controller
         try {
             $_directories=Servers::paginate(12);
             $request = request()->only('q');
-s;
+
             $message="Get all directories from database";
 
             if(isset($request['q'])){
@@ -131,6 +133,9 @@ s;
 
         try {
             $_file_id = base64_decode($_file_id);
+            //$_ip,$_device,$_browser,$_OS
+            $_info=$this->getBrowserInfo();
+            LogsFileDownload::dispatch($_file_id,true, $this->getIp(),$_info['device'],$_info['browser'],$_info['OS'],Auth::guard('admin')->user()->id);
 
             return response()->download($this->copyFiletoDownload($_file_id));
 
@@ -164,7 +169,6 @@ s;
                     $file_server->save();
 
                      LogsApplication::dispatch("ServersController","generateLink","Link to download file was generated. ".(route('voip-file-download',['secret'=>$file_server->secret])),Auth::guard('admin')->user()->id);
-
                     return response()->json([
                         "error"=>0,
                         "message"=>'The link to download the file was generated',
@@ -241,6 +245,7 @@ s;
 
         return $file;
     }
+
     private function getTokenSecret(){
         $string="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$@$!%*?&#.-_";
         $string=str_shuffle($string);
@@ -279,6 +284,43 @@ s;
         }
 
         return $_files;
+    }
+
+    private function getBrowserInfo(){
+
+        $_info=[
+            'OS'=>"",
+            "device"=>"",
+            "browser"=>""
+        ];
+
+        if(Browser::isDesktop()){
+            $_info['device']= "Desktop";
+        }
+        else{
+            $_info['device']= Browser::deviceFamily();
+        }
+
+        $_info['browser']= Browser::browserName();
+
+        $_info['OS']= Browser::platformName();
+
+        return $_info;
+
+    }
+
+    public function getIp(){
+        foreach (array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR') as $key){
+            if (array_key_exists($key, $_SERVER) === true){
+                foreach (explode(',', $_SERVER[$key]) as $ip){
+                    $ip = trim($ip); // just to be safe
+                    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false){
+                        return $ip;
+                    }
+                }
+            }
+        }
+        return request()->ip(); // it will return server ip when no client ip found
     }
 
 

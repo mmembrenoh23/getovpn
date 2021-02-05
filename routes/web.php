@@ -27,13 +27,22 @@ Route::get('forgot-password', function(){
 
 Route::middleware(['auth','preventBackHistory'])->group(function () {
     Route::get('logout', 'Auth\LoginController@logout')->name('logout');
-    Route::get('servers','ServersController@index')->name('servers');
-    Route::get('server/{server_id}','ServersController@getServerFiles')->name('server');
-    Route::get('server/{file_id}/secret','ServersController@generetSecret')->name('gen-secret');
-    Route::get('server/{file_id}/download','ServersController@getDownloadFile')->name('download-file');
 
-    Route::get('server/{file_id}/link',"ServersController@generateLink")->name('voip-link-download');
-    Route::get('server/search/{query}',"ServersController@searchServer")->name('search-server');
+    Route::group(['prefix' => 'servers'], function () {
+        Route::get('/','ServersController@index')->name('servers');
+        Route::get('search/{query}',"ServersController@searchServer")->name('search-server');
+
+    });
+
+    Route::group(['prefix' => 'server'], function () {
+         Route::get('{server_id}','ServersController@getServerFiles')->name('server');
+        Route::get('{file_id}/secret','ServersController@generetSecret')->name('gen-secret');
+        Route::get('{file_id}/download','ServersController@getDownloadFile')->name('download-file');
+
+        Route::get('{file_id}/link',"ServersController@generateLink")->name('voip-link-download');
+
+    });
+
 
     Route::get('config/server', function(){
         return view("admin.config.servers.servers");
@@ -43,7 +52,11 @@ Route::middleware(['auth','preventBackHistory'])->group(function () {
         return view("admin.config.users.users");
     })->name('config.users');
 
-    Route::get('logs', function(){
-        return view("admin.logs.log");
-    })->name('logs');
+    Route::group(['prefix' => 'logs'], function () {
+
+        Route::get('/', "LogsController@index")->name('logs');
+        Route::get('app', "LogsController@getAllLogApp")->name('logs-app');
+        Route::get('file', "LogsController@getAllLogFile")->name('logs-file');
+
+    });
 });
