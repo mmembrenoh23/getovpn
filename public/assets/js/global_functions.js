@@ -232,33 +232,40 @@ window.App={
         } */
         "language": {
             searchPlaceholder: "Buscar",
-            "sProcessing": "Procesando...",
+            "sProcessing": "Process...",
             "sLengthMenu": "Mostrar _MENU_ registros",
-            "sZeroRecords": "No se encontraron resultados",
-            "sEmptyTable": "No hay datos disponible",
-            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+            "sZeroRecords": "There's data to result",
+            "sEmptyTable": "There's records availables",
+            "sInfo": "Show record of _START_ to _END_ total _TOTAL_ record",
+            "sInfoEmpty": "Show records of 0 to 0 of 0 records",
+            "sInfoFiltered": "(Filter total of _MAX_ records)",
             "sInfoPostFix": "",
             "sSearch": "",
             "sUrl": "",
             "sInfoThousands": ",",
-            "sLoadingRecords": "Cargando...",
+            "sLoadingRecords": "Loading...",
             "oPaginate": {
-                "sFirst": "Primero",
-                "sLast": "Último",
-                "sNext": "Siguiente",
-                "sPrevious": "Anterior"
+                "sFirst": "First",
+                "sLast": "Last",
+                "sNext": "Next",
+                "sPrevious": "Before"
             },
             "oAria": {
-                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                "sSortAscending": ": Activate to sort the column in ascending order",
+                "sSortDescending": ": Activate to sort the column in descending order"
             }
         }
     },
-    dataTable:function(){
-
-        $(".table").DataTable(FnApp.confi_data_table);
+    fnUnloadTable: function (oTable) {
+        if (oTable != null) {
+            oTable.fnClearTable()
+            oTable.fnDraw();
+            oTable.fnDestroy();
+            oTable.empty();
+        }
+    },
+    setDatatable:function($_table){
+        return $_table.DataTable(App.confi_data_table);
     }
 
 }
