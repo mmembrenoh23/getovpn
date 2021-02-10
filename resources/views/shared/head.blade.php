@@ -15,6 +15,7 @@
 
     <!-- BEGIN VENDOR CSS-->
     <link rel="stylesheet" type="text/css" href="{{asset('theme-assets/css/vendors.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('theme-assets/css/bootstrap.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('theme-assets/vendors/css/charts/chartist.css')}}">
     <!-- END VENDOR CSS-->
     <!-- BEGIN CHAMELEON  CSS-->

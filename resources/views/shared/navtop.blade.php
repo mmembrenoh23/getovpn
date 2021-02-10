@@ -4,7 +4,7 @@
         <div class="navbar-wrapper">
             <div class="navbar-container content">
                 <div class="collapse navbar-collapse show" id="navbar-mobile">
-                  
+
                     @if (trim($__env->yieldContent('search')))
                         @yield("search")
                     @else
@@ -14,16 +14,11 @@
                     </div>
 
                     @endif
-                  
-                    
-                    
+
+
+
                     <ul class="nav navbar-nav float-right">
-                        
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-label" href="#" title="Generar Secret" data-toggle="modal" data-target="#mGenerarSecretG">
-                                <i class="la la-key"></i>
-                            </a>                           
-                        </li>
+
                         <li class="dropdown dropdown-user nav-item"><a
                                 class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
                                 <span class="avatar avatar-online"><img
@@ -37,7 +32,7 @@
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="configuraciones/perfil-usuario.html">
                                         <i class="ft-user"></i> Edit Profile
-                                    </a>                                        
+                                    </a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout')}}">
                                         <i class="ft-power"></i> Logout

@@ -37,14 +37,14 @@ App.confi_data_table ={
                     "sFirst": "First",
                     "sLast": "Last",
                     "sNext": "Next",
-                    "sPrevious": "Before"
+                    "sPrevious": "Previous"
                 },
                 "oAria": {
                     "sSortAscending": ": Activate to sort the column in ascending order",
                     "sSortDescending": ": Activate to sort the column in descending order"
                 }
             },
-            "order":[0,'desc'],
+            "order":[1,'desc'],
            "serverSide": true,
            "processing": true,
            "ordering": false,
@@ -76,6 +76,7 @@ App.confi_data_table ={
                     { "mData": "ip", "bSortable": true, "sTitle": "IP" },
                     { "mData": "device", "bSortable": true, "sTitle": "Device" },
                     { "mData": "browser", "bSortable": true, "sTitle": "Browser" },
+                    { "mData": "name", "bSortable": true, "sTitle": "File name" },
                     { "mData": "fullname", "bSortable": true, "sTitle": "User" },
                     { "mData": "date", "bSortable": true, "sTitle": "Date" },
                 ],
@@ -97,14 +98,14 @@ App.confi_data_table ={
                     "sFirst": "First",
                     "sLast": "Last",
                     "sNext": "Next",
-                    "sPrevious": "Before"
+                    "sPrevious": "Previous"
                 },
                 "oAria": {
                     "sSortAscending": ": Activate to sort the column in ascending order",
                     "sSortDescending": ": Activate to sort the column in descending order"
                 }
             },
-            "order":[0,'desc'],
+            "order":[1,'desc'],
            "serverSide": true,
            "processing": true,
            "ordering": false,
@@ -113,7 +114,7 @@ App.confi_data_table ={
             "sDom":'<"top"l>rt<"bottom"ip>',
 
         };
-console.log($(".log-file").data("log_file_route"));
+
 App.confi_data_table.ajax=$(".log-file").data("log_file_route");
 $TablLogFile = App.setDatatable($("#tbLogFile"));
 

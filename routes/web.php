@@ -48,9 +48,7 @@ Route::middleware(['auth','preventBackHistory'])->group(function () {
         return view("admin.config.servers.servers");
     })->name('config.server');
 
-    Route::get('config/users', function(){
-        return view("admin.config.users.users");
-    })->name('config.users');
+    Route::resource('config/users', 'UserController');
 
     Route::group(['prefix' => 'logs'], function () {
 

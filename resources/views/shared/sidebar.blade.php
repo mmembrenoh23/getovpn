@@ -10,7 +10,7 @@
         </div>
         <div class="main-menu-content">
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-               
+
                 <li class="active nav-item"><a href="{{ route('servers') }}"><i class="ft-server"></i><span class="menu-title"
                             data-i18n="">Servers</span></a>
                 </li>
@@ -20,18 +20,15 @@
                             <span class="menu-title" data-i18n="">Configurations</span>
                         </a>
                     <ul class="menu-content">
-                        <li class="is-shown">
-                           <a class="menu-item" href="{{ route('config.server') }}">Servers</a>
-                        </li>
-                        <li class="is-shown">
-                           <a class="menu-item" href="{{ route('config.users') }}">Users</a>
+                       <li class="is-shown">
+                           <a class="menu-item" href="{{ route('users.index') }}">Users</a>
                         </li>
                     </ul>
                 </li>
                 <li class="nav-item"><a href="{{ route('logs') }}"><i class="ft-activity"></i><span class="menu-title"
                     data-i18n="">Logs</span></a>
                 </li>
-            </ul> 
+            </ul>
         </div>
         <div class="navigation-background"></div>
     </div>

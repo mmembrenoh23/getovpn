@@ -45,7 +45,9 @@ class LogsController extends Controller
                         ->orWhere('window', 'like', '%' .$searchValue . '%')
                         ->orWhere('users.first_name', 'like', '%' .$searchValue . '%')
                         ->orWhere('users.last_name', 'like', '%' .$searchValue . '%')
-                        ->join('users', 'users.id', '=', 'logs_app.user_id')->count();
+                        ->join('users', 'users.id', '=', 'logs_app.user_id')
+                        ->orderBy('logs_app.id','desc')
+                        ->count();
 
 
                 // Fetch records
@@ -54,7 +56,8 @@ class LogsController extends Controller
                     ->orWhere('window', 'like', '%' .$searchValue . '%')
                     ->orWhere(\DB::raw("concat(users.first_name,' ',users.last_name)"), 'like', '%' .$searchValue . '%')
                     ->join('users', 'users.id', '=', 'logs_app.user_id')
-                    ->select('message','action','window',\DB::raw("concat(users.first_name,' ',users.last_name) as fullname",'logs_app.created_at'))
+                    ->select('logs_app.id','message','action','window',\DB::raw("concat(users.first_name,' ',users.last_name) as fullname"),'logs_app.created_at')
+                    ->orderBy('logs_app.id','desc')
                     ->skip($start)
                     ->take($rowperpage)
                     ->get();
@@ -70,7 +73,7 @@ class LogsController extends Controller
                             $message .="$key: $value <br>";
                         }
                     }
-                    $message = \Str::limit($message, 50, ' ...');
+
                     $data_arr[] = array(
                     "id" => $record->id,
                     "message" => $message,
@@ -130,7 +133,9 @@ class LogsController extends Controller
                         ->orWhere('device', 'like', '%' .$searchValue . '%')
                         ->orWhere('ip', 'like', '%' .$searchValue . '%')
                         ->orWhere('server_file.name', 'like', '%' .$searchValue . '%')
-                        ->join('server_file', 'server_file.id', '=', 'logs_download_file.server_file_id')->count();
+                        ->join('server_file', 'server_file.id', '=', 'logs_download_file.server_file_id')
+                        ->orderBy('logs_download_file.id','desc')
+                        ->count();
 
 
                 // Fetch records
@@ -142,7 +147,8 @@ class LogsController extends Controller
                         ->join('server_file', 'server_file.id', '=', 'logs_download_file.server_file_id')
                         ->leftJoin('log_file_user', 'logs_download_file_id', '=', 'logs_download_file.id')
                         ->leftJoin('users', 'users.id', '=', 'log_file_user.user_id')
-                    ->select('logs_download_file.id','OS','browser','device','ip','server_file.name','server_file.owner','is_admin', \DB::raw("concat(users.first_name,' ',users.last_name) as fullname"),'logs_download_file.created_at')
+                    ->select('logs_download_file.id','OS','browser','device','ip','server_file.name as file','server_file.owner','is_admin', \DB::raw("concat(users.first_name,' ',users.last_name) as fullname"),'logs_download_file.created_at')
+                    ->orderBy('logs_download_file.id','desc')
                     ->skip($start)
                     ->take($rowperpage)
                     ->get();
@@ -162,7 +168,7 @@ class LogsController extends Controller
                     "browser" => $record->browser,
                     "device" => $record->device,
                     "ip" => $record->ip,
-                    "name" => $record->window,
+                    "name" => $record->file,
                     "fullname" => $username,
                     "date" => \Carbon\Carbon::parse($record->created_at)->format('F j, Y'),
                     );

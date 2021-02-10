@@ -17,4 +17,26 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   width: 80% !important;
 }
 
+table .bg-primary {
+  background-color: #135669 !important;
+}
+table .btn-outline-danger {
+  color: #fa626b;
+  border-color: #fa626b;
+}
+table .btn-outline-danger:not(:disabled):not(.disabled):active,
+table .btn-outline-danger:not(:disabled):not(.disabled).active,
+table .show > .btn-outline-danger.dropdown-toggle,
+table .btn-outline-danger:hover {
+  border-color: #fa626b;
+  background-color: #fa626b;
+}
+
+form .form-control.is-invalid {
+  border-color: #fa626b;
+}
+form .form-control.is-valid {
+  border-color: #5ed84f;
+}
+
 /*# sourceMappingURL=style.css.map */

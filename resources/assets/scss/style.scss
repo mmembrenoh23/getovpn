@@ -20,3 +20,31 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 .navbar-header .navbar-brand .brand-logo {
     width: 80% !important;
 }
+
+table {
+    .bg-primary {
+        background-color: #135669 !important;
+    }
+    .btn-outline-danger{
+        color: #fa626b;
+        border-color: #fa626b;
+    }
+    .btn-outline-danger:not(:disabled):not(.disabled):active,
+    .btn-outline-danger:not(:disabled):not(.disabled).active,
+    .show>.btn-outline-danger.dropdown-toggle,
+    .btn-outline-danger:hover {
+            border-color: #fa626b;
+            background-color: #fa626b;
+    }
+}
+
+form{
+    .form-control{
+        &.is-invalid {
+            border-color: #fa626b;
+        }
+        &.is-valid{
+            border-color: #5ed84f;
+        }
+    }
+}
