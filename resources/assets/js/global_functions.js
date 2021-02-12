@@ -6,15 +6,14 @@
 */
 /***********************************************************/
 /************** CONFIGURACIONES **********************/
+$('.modal').on('hidden.bs.modal', function (e) {
+    $form= $(this).find("form");
 
+    if($form){
+       App.fnLimpiarInputs($form);
+    }
+})
 
-    $('#mGenerarSecret').on('hide.bs.modal', function (event) {
-        $form=  $('#mGenerarSecret').find("form");
-
-        if($form){
-        App.fnLimpiarInputs($form);
-        }
-    });
 
 $.ajaxSetup({
         headers: {
@@ -23,9 +22,72 @@ $.ajaxSetup({
     });
 /**************************************************************/
 
-
-
 window.App={
+    fnValidarForm : function ($form){
+
+        var $_is_valid=false;
+        try {
+
+            $form.find("input").each(function(i, element){
+                $(element).removeClass("is-invalid");
+                $(element).parent().find(".invalid-feedback").remove();
+                switch($(element)[0].type){
+                    case "text":
+                    case "file":
+                    case "hide":
+                        if($.trim($(element).val()) ==""){
+                            $(element).addClass("is-invalid");
+                            $(element).parent().append("<div class='invalid-feedback'>This field can't be Empty</div>");
+                            $_is_valid=true;
+                        }
+                        else{
+                            $(element).removeClass("is-invalid");
+                            $(element).parent().find(".invalid-feedback").remove();
+                        }
+                        break;
+                    case "password":
+                        if(!window.App.fnValidarContrasenia($(element).val())){
+                             $(element).addClass("is-invalid");
+                            $(element).parent().append("<div class='invalid-feedback'>The password format is invalid</div>");
+                            $_is_valid=true;
+                        }else{
+                            $(element).removeClass("is-invalid");
+                            $(element).parent().find(".invalid-feedback").remove();
+                        }
+                        break;
+
+                    case "email":
+                        if(!window.App.ValidarCorreos($(element).val())){
+                            $(element).addClass("is-invalid");
+                            $(element).parent().append("<div class='invalid-feedback'>The  email format is invalid </div>");
+                            $_is_valid=true;
+                        }else{
+                            $(element).removeClass("is-invalid");
+                            $(element).parent().find(".invalid-feedback").remove();
+                        }
+                        break;
+                    case "checkbox":
+                    case "radio":
+                        if(!$(element).is(":checked")){
+                            $(element).addClass("is-invalid");
+                            $(element).parent().append("<div class='invalid-feedback'>You need check an option</div>");
+                            $_is_valid=true;
+                        }
+                        else{
+                            $(element).removeClass("is-invalid");
+                            $(element).parent().find(".invalid-feedback").remove();
+                        }
+                        break;
+                }
+
+            });
+
+        } catch (error) {
+            toastr.error($e.message);
+        }
+
+        return $_is_valid;
+    },
 
     fnGenerarContrasenia: function($_input1){
         var contrasenia="";
@@ -286,3 +348,12 @@ String.prototype.shuffle = function () {
     return a.join("");
 }
 
+/**
+ *
+ * @param settings
+ * @param helpPage
+ * @param message
+ */
+$.fn.dataTable.ext.errMode = function (settings, helpPage, message) {
+    toastr.success(message);
+}

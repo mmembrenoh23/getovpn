@@ -19,7 +19,7 @@
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table">
+            <table class="table" id="tbUsers">
                 <thead class="bg-primary white">
                     <tr>
                         <th>
@@ -73,8 +73,8 @@
                                  @endif
                              </td>
                             <td>
-                                <button class="btn btn-outline-info btn-sm" data-route="{{route('users.show',['user'=>$user->id])}}" ><i class="ft ft-edit"></i> Edit </button>
-                                <button class="btn btn-outline-danger btn-sm" data-route="{{route('users.destroy',['user'=>$user->id])}}"  ><i class="ft ft-user-minus "></i> Inactive </button>
+                                <button class="btn btn-outline-info btn-sm" data-route="{{route('users.show',['user'=>$user->id])}}" data-route_update="{{route('users.update',['user'=>$user->id])}}" id="btnEdit"  data-toggle="modal" data-target="#mEditUser"><i class="ft ft-edit"></i> Edit </button>
+                                <button class="btn btn-outline-danger btn-sm" data-route="{{route('users.destroy',['user'=>$user->id])}}"  id="btnDelete" ><i class="ft ft-user-minus "></i> Inactive </button>
                             </td>
                         </tr>
                     @endforeach
@@ -86,6 +86,7 @@
 </div>
 
 @include('admin.config.users.modal-create')
+@include('admin.config.users.modal-edit')
 
 @endsection
 

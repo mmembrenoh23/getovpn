@@ -11,7 +11,8 @@
 <script src="{{asset('theme-assets/vendors/js/select2/select2.min.js')}}"></script>
 <script src="{{asset('theme-assets/vendors/js/tables/jquery.dataTables.min.js')}}"type="text/javascript"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" type="text/javascript"></script>
+
 <script src="{{asset('assets/js/global_functions.js')}}"type="text/javascript"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 @stack('scripts')
 

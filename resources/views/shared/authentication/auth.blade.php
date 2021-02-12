@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i%7CComfortaa:300,400,700" rel="stylesheet">
 
     <!-- BEGIN: Vendor CSS-->
-    <link rel="stylesheet" type="text/css" href="{{asset('theme-assets/vendors/css/vendors.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('theme-assets/css/vendors.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('theme-assets/vendors/css/forms/toggle/switchery.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('theme-assets/css/plugins/forms/switch.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('theme-assets/css/core/colors/palette-switch.min.css')}}">
@@ -84,12 +84,12 @@
       <!-- END: Page Vendor JS-->
 
       <!-- BEGIN: Theme JS-->
-      <script src="{{asset('theme-assets/vendors/js/core/app-menu.min.js')}}" type="text/javascript"></script>
-      <script src="{{asset('theme-assets/vendors/js/core/app.min.js')}}" type="text/javascript"></script>
+      <script src="{{asset('src/js/core/app-menu-lite.js')}}" type="text/javascript"></script>
+      <script src="{{asset('src/js/core/app-lite.js')}}" type="text/javascript"></script>
       <!-- END: Theme JS-->
 
       <!-- BEGIN: Page JS-->
-      <script src="{{asset('theme-assets/vendors/js/core/form-login-register.min.js')}}" type="text/javascript"></script>
+      <script src="{{asset('src/js/scripts/forms/form-login-register.min.js')}}" type="text/javascript"></script>
       <!-- END: Page JS-->
 
 

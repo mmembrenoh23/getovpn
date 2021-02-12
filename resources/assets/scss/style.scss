@@ -41,10 +41,16 @@ table {
 form{
     .form-control{
         &.is-invalid {
-            border-color: #fa626b;
+            border-color: #fa626b !important;
         }
         &.is-valid{
-            border-color: #5ed84f;
+            border-color: #5ed84f !important;
         }
     }
+
+    .invalid-feedback{
+        color: #fa626b !important;
+        display: block;
+    }
+
 }

@@ -27,7 +27,7 @@
     <link rel="stylesheet" type="text/css" href="{{asset('theme-assets/css/pages/dashboard-ecommerce.css')}}">
     <link href="{{asset('theme-assets/vendors/css/select2/select2.min.css')}}" rel="stylesheet" />
     <link rel="stylesheet" href="{{asset('theme-assets/vendors/css/tables/datatable/jquery.dataTables.min.css')}}" type="text/css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" type="text/css">
     <!-- END Page Level CSS-->
     <!-- BEGIN Custom CSS-->
     <link rel="stylesheet" href="{{asset('assets/css/style.css')}}" type="text/css">

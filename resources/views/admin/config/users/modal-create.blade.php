@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form class="form">
+                <form class="form" method="POST" action="{{ route('users.store') }}" id="frmCreate">
                     <div class="form-body">
 
                         <h4 class="form-section">
@@ -47,17 +47,32 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label>Password</label>
-                                    <input class="form-control border-primary" required id="txtPassword" name="txtPassword" type="password" placeholder="Password">
+                                      <div class="input-group" >
+                                        <input class="form-control border-primary" required id="txtPassword" name="txtPassword" type="password" placeholder="Password">
+                                        <span class="input-group-append" id="btnSeePass">
+                                            <button class="btn btn-success" type="button" data-repeater-delete="">
+                                                <i class="ft-eye-off"></i>
+                                            </button>
+                                        </span>
+                                    </div>
                                     <div class="generate-password mt-1">
                                         <button class="btn btn-outline-info btn-sm" type="submit" id="btnGenPass">Generate Password</button>
                                     </div>
                                 </div>
+
+
+
+
                             </div>
                         </div>
 
                     </div>
                 </form>
             </div>
+            <div class="modal-footer">
+				<button type="button" class="btn btn-danger" id="btnSave">Save</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
 
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

@@ -123,6 +123,5 @@
 
     </script>
 
-    <script src="{{ asset('theme-assets/vendors/js/pagination/pagination.js')}}"></script>
 
 @endpush

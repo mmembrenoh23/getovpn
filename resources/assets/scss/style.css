@@ -35,9 +35,14 @@ table .btn-outline-danger:hover {
 }
 
 form .form-control.is-invalid {
-  border-color: #fa626b;
+  border-color: #fa626b !important;
 }
 
 form .form-control.is-valid {
-  border-color: #5ed84f;
+  border-color: #5ed84f !important;
+}
+
+form .invalid-feedback {
+  color: #fa626b !important;
+  display: block;
 }

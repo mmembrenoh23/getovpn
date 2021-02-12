@@ -5,12 +5,7 @@ App.confi_data_table ={
             "bSortable": false,
             "fnHeaderCallback": function (nHead, aData, iStart, iEnd, aiDisplay) {
                 $(nHead).addClass("bg-primary").find("th").addClass("white");
-                columnas_ = [];
-                //console.log(aData);
-                $(nHead).find("th").each(function (i) {
-                    columnas_.push({ id: i, nombre: $(this)[0].innerHTML})
-                    console.log($(this), i);
-                })
+
             },mark: true,
             columns: [
                { "mData": "id", "bSortable": true, "sTitle": "#" },
@@ -63,12 +58,7 @@ App.confi_data_table ={
             "bSortable": false,
             "fnHeaderCallback": function (nHead, aData, iStart, iEnd, aiDisplay) {
                 $(nHead).addClass("bg-primary").find("th").addClass("white");
-                columnas_ = [];
-                //console.log(aData);
-                $(nHead).find("th").each(function (i) {
-                    columnas_.push({ id: i, nombre: $(this)[0].innerHTML})
-                    console.log($(this), i);
-                })
+
             },mark: true,
             columns: [
                     { "mData": "id", "bSortable": true, "sTitle": "#" },
@@ -119,11 +109,3 @@ App.confi_data_table.ajax=$(".log-file").data("log_file_route");
 $TablLogFile = App.setDatatable($("#tbLogFile"));
 
 
-
- /* if (oTable != null) {
-        oTable.destroy();
-    }
-    $args = $_args;
-    $('#tbtCheques').css('width', "100%");
-
-    oTable = $('#tbtCheques').DataTable($_args); */
