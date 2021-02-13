@@ -9,6 +9,7 @@
             </div>
             <div class="modal-body">
                 <form class="form" method="POST" action="#" id="frmEdit">
+                    @method('PUT')
                     <div class="form-body">
 
                         <h4 class="form-section">

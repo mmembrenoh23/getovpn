@@ -167,7 +167,62 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if(request()->ajax()){
+            try {
+                $user = User::find($id);
+
+                $data = ["first_name"=>$request->get("txtFirstNameE"),
+                    "last_name"=>$request->get("txtLastNameE"),
+                    "email"=>$request->get("txtEmailE"),
+                    "password"=>$request->get("txtPasswordE")];
+
+                $flag=false;
+
+                foreach($data as $key =>$val){
+
+                    if($user->$key != $val){
+                        $user->$key = $val;
+
+                        $flag = true;
+                    }
+                }
+
+                if($flag){
+                    if($user->save()){
+                        LogsApplication::dispatch("UserController","update","The user data was updated. user id = $id",
+                        Auth::guard('admin')->user()->id);
+
+                        return response()->json(['message'=>"The user data was updated",'error'=>0]);
+                    }
+                    else{
+                        $message ="An error was occurred when try to update the user data <br>".$request->get("txtFirstNameE")."<br>";
+                        $message .=$request->get("txtLastNameE")."<br>";
+                        $message .=$request->get("txtEmailE")."<br>";
+                        LogsApplication::dispatch("UserController",$message,
+                        Auth::guard('admin')->user()->id);
+
+                        return response()->json(['message'=>"An error was occurred when try to update the user data",'error'=>1]);
+                    }
+                }
+                else{
+                    $message ="There's no data to update";
+                    LogsApplication::dispatch("UserController",$message,
+                    Auth::guard('admin')->user()->id);
+
+                    return response()->json(['message'=>"There's no data to update",'error'=>1]);
+
+                }
+
+            } catch (\Throwable $th) {
+                $message=serialize(["line"=>$th->getLine(),
+                      "file"=>$th->getFile(),
+                    "message"=>$th->getMessage()]);
+
+                LogsApplication::dispatch("UserController","update",$message,Auth::guard('admin')->user()->id);
+
+                throw new \App\Exceptions\AdminException($th->getMessage());
+            }
+        }
     }
 
     /**
