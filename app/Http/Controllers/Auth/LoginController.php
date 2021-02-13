@@ -32,7 +32,7 @@ class LoginController extends Controller
                 'password' => 'required|min:6'
             ]);
 
-            if (Auth::guard('admin')->attempt(['username' => $credentials['username'], 'password' =>  $credentials['password']])) {
+            if (Auth::attempt(['username' => $credentials['username'], 'password' =>  $credentials['password']])) {
                 return  redirect()
                 ->intended(route('servers'));
             }
@@ -45,7 +45,9 @@ class LoginController extends Controller
             $message ="An error was occurred when the user ".$request->get("username")." try to login";
             LogsApplication::dispatch("LoginController","adminLogin",$message);
 
-            return response()->json(['message'=>"An error was occurred when try to update the user data",'error'=>1]);
+            \Log::warning($th->getMessage());
+            throw new \App\Exceptions\CustomException($th->getMessage());
+
         }
 
 
@@ -54,7 +56,7 @@ class LoginController extends Controller
 
     public function logout()
     {
-        Auth::guard('admin')->logout();
+        Auth::logout();
         return redirect()
             ->route('login')
             ->with('status','Admin has been logged out!');
