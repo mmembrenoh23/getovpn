@@ -170,12 +170,13 @@ $("#mCreateUser").on("click","#btnSave",function(e){
 $("#mEditUser").on("click","#btnSave",function(e){
     e.preventDefault();
   // var $form= $(e.delegateTarget).find("form");
+  console.log(e.delegateTarget);
    var _form =$(e.delegateTarget).find("form");
 
    var _route= _form.attr('action');
 
     try {
-        if(App.fnValidarForm(_form)){
+        if(App.fnValidarForm(_form, not_valid=["txtPasswordE"])){
             return false;
         }
 

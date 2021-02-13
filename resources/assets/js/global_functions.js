@@ -23,7 +23,7 @@ $.ajaxSetup({
 /**************************************************************/
 
 window.App={
-    fnValidarForm : function ($form){
+    fnValidarForm : function ($form,not_valid=[]){
 
         var $_is_valid=false;
         try {
@@ -46,6 +46,8 @@ window.App={
                         }
                         break;
                     case "password":
+
+
                         if(!window.App.fnValidarContrasenia($(element).val())){
                              $(element).addClass("is-invalid");
                             $(element).parent().append("<div class='invalid-feedback'>The password format is invalid</div>");

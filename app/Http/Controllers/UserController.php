@@ -198,7 +198,7 @@ class UserController extends Controller
                         $message ="An error was occurred when try to update the user data <br>".$request->get("txtFirstNameE")."<br>";
                         $message .=$request->get("txtLastNameE")."<br>";
                         $message .=$request->get("txtEmailE")."<br>";
-                        LogsApplication::dispatch("UserController",$message,
+                        LogsApplication::dispatch("UserController","update",$message,
                         Auth::guard('admin')->user()->id);
 
                         return response()->json(['message'=>"An error was occurred when try to update the user data",'error'=>1]);
