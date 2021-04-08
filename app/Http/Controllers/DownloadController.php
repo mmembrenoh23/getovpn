@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\LogsFileDownload;
+use App\Jobs\LogsApplication;
 use Illuminate\Http\Request;
 use App\Model\Server;
 
@@ -15,8 +16,22 @@ class DownloadController extends Controller
 {
     private $getClientId;
     public function downloadFile($secret){
-         $this->getClientId=$this->getIp();
-         return response()->download($this->copyFiletoDownload($secret));
+        try {
+
+            $this->getClientId=$this->getIp();
+
+
+            return response()->download($this->copyFiletoDownload($secret));
+
+        } catch (\Throwable $th) {
+
+             $message=serialize(["line"=>$th->getLine(),
+                      "file"=>$th->getFile(),
+                    "message"=>$th->getMessage()]);
+             \Log::warning( $message);
+            throw new \App\Exceptions\CustomException($th->getMessage());
+        }
+
     }
 
     private function copyFiletoDownload($_secret){
@@ -43,9 +58,17 @@ class DownloadController extends Controller
             return $file;
         } catch (ModelNotFoundException $exception) {
            \Log::warning($exception->getMessage());
+             $message=serialize(["line"=>$exception->getLine(),
+                      "file"=>$exception->getFile(),
+                    "message"=>$exception->getMessage()]);
+            LogsApplication::dispatch("DownloadController","copyFiletoDownload",$message);
             throw new \App\Exceptions\CustomException($exception->getMessage());
         }catch (\Exception $e) {
              \Log::warning($e->getMessage());
+              $message=serialize(["line"=>$e->getLine(),
+                      "file"=>$e->getFile(),
+                    "message"=>$e->getMessage()]);
+            LogsApplication::dispatch("DownloadController","copyFiletoDownload",$message);
             throw new \Exception($e->getMessage(), 1);
         }
 

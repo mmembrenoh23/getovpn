@@ -7,19 +7,19 @@
     <div class="text-center mb-1">
             <img src="{{ asset('theme-assets/images/logo-alt-300x65.png')}}" alt="branding logo">
     </div>
-    <div class="font-large-1  text-center">                       
+    <div class="font-large-1  text-center">
         Login
     </div>
-   
+
 </div>
 <div class="card-content">
-   
+
     <div class="card-body">
         <form class="form-horizontal" action="{{ route('loginuser') }}" method="POST" novalidate="">
-            @csrf
+         {{csrf_field()}}
             @if(session('error'))
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{session('error')}}           
+                    {{session('error')}}
                 </div>
             @endif
             <fieldset class="form-group position-relative has-icon-left">
@@ -41,16 +41,16 @@
             </fieldset>
             <div class="form-group row">
                 <div class="col-md-6 col-12 text-center text-sm-left">
-                   
+
                 </div>
-                <div class="col-md-6 col-12 float-sm-left text-center text-sm-right"><a href="{{ route('forgot-password') }}" class="card-link">Forgot Password?</a></div>
-            </div>                           
-            <div class="form-group text-center">
-                <button type="submit" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1">Login</button>    
+
             </div>
-           
+            <div class="form-group text-center">
+                <button type="submit" class="btn round btn-block btn-glow btn-bg-gradient-x-purple-blue col-12 mr-1 mb-1">Login</button>
+            </div>
+
         </form>
     </div>
-    
+
 </div>
 @endsection

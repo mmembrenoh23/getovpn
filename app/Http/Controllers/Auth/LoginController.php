@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use App\Jobs\LogsApplication ;
+use App\Model\UserAttempt;
 
 class LoginController extends Controller
 {
@@ -18,6 +19,7 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
+        \Log::info(\Hash::make('Test2021*'));
         return view('authentication.login');
     }
 
@@ -32,10 +34,18 @@ class LoginController extends Controller
                 'password' => 'required|min:6'
             ]);
 
-            if (Auth::attempt(['username' => $credentials['username'], 'password' =>  $credentials['password']])) {
+            if (Auth::attempt(['username' => $credentials['username'], 'password' =>  $credentials['password'], 'is_active'=> 1])) {
                 return  redirect()
                 ->intended(route('servers'));
             }
+
+            UserAttempt::create([
+                'username' =>  $credentials['username'],
+                'message' => 'The provided credentials do not match our records.',
+                'created_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+            ]);
+
             return back()->withInput()
             ->with([
                 'error' => 'The provided credentials do not match our records.',

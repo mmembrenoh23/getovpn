@@ -1,6 +1,6 @@
 @extends('shared.app')
 
-@section('title', "Users App")
+@section('title_site', "Users App")
 
 
 @section('htmlheader')
@@ -74,7 +74,7 @@
                              </td>
                             <td>
                                 <button class="btn btn-outline-info btn-sm" data-route="{{route('users.show',['user'=>$user->id])}}" data-route_update="{{route('users.update',['user'=>$user->id])}}" id="btnEdit"  data-toggle="modal" data-target="#mEditUser"><i class="ft ft-edit"></i> Edit </button>
-                                <button class="btn btn-outline-danger btn-sm" data-route="{{route('users.destroy',['user'=>$user->id])}}"  id="btnDelete" ><i class="ft ft-user-minus "></i> Inactive </button>
+                                <button class="btn {{ ($user->is_active)? 'btn-outline-danger' : 'btn-outline-warning' }} btn-sm" data-route="{{route('users.destroy',['user'=>$user->id])}}"  id="btnDelete" ><i class="ft ft-user-minus "></i> {{ ($user->is_active)? 'Inactive' : 'Active' }} </button>
                             </td>
                         </tr>
                     @endforeach
@@ -91,5 +91,6 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('theme-assets/js/scripts/extensions/sweetalert2.all.js') }}"></script>
     <script src="{{ asset('assets/js/users.js') }}"></script>
 @endpush

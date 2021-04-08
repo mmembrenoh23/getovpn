@@ -30,7 +30,7 @@
                                                 src="{{ asset('theme-assets/images/portrait/small/avatar-s-19.png')}}"
                                                 alt="avatar"><span class="user-name text-bold-700 ml-1">{{Auth::guard('admin')->user()->username}}</span></span></a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="configuraciones/perfil-usuario.html">
+                                    <a class="dropdown-item" href="{{ route('users.edit',['user'=>Auth::guard('admin')->user()->id]) }}">
                                         <i class="ft-user"></i> Edit Profile
                                     </a>
                                     <div class="dropdown-divider"></div>

@@ -1,6 +1,6 @@
 @extends('shared.app')
 
-@section('title', 'Servers')
+@section('title_site', 'Servers')
 
 @push('css')
     <style>

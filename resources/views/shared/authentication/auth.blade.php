@@ -91,7 +91,7 @@
       <!-- BEGIN: Page JS-->
       <script src="{{asset('src/js/scripts/forms/form-login-register.min.js')}}" type="text/javascript"></script>
       <!-- END: Page JS-->
-
+      @stack('scripts')
 
     <!-- END: Body-->
   </body>

@@ -10,10 +10,9 @@ $('.modal').on('hidden.bs.modal', function (e) {
     $form= $(this).find("form");
 
     if($form){
-       App.fnLimpiarInputs($form);
+      App.fnLimpiarInputs($form);
     }
 })
-
 
 $.ajaxSetup({
         headers: {
@@ -26,35 +25,69 @@ window.App={
     fnValidarForm : function ($form,not_valid=[]){
 
         var $_is_valid=false;
+        var $_not_valid_field=false;
+
         try {
 
             $form.find("input").each(function(i, element){
                 $(element).removeClass("is-invalid");
                 $(element).parent().find(".invalid-feedback").remove();
+
+                if(not_valid.length > 0){
+                    $_not_valid_field = true;
+                }
+                var $flag = false;
+
+
                 switch($(element)[0].type){
                     case "text":
                     case "file":
                     case "hide":
-                        if($.trim($(element).val()) ==""){
-                            $(element).addClass("is-invalid");
-                            $(element).parent().append("<div class='invalid-feedback'>This field can't be Empty</div>");
-                            $_is_valid=true;
+                         if($_not_valid_field){
+                            for(var i in not_valid){
+                                if($(element).attr('id') == not_valid[i]){
+                                    $flag = true;
+                                    break;
+                                }
+                            }
                         }
-                        else{
-                            $(element).removeClass("is-invalid");
-                            $(element).parent().find(".invalid-feedback").remove();
+
+
+                        if(!$flag){
+                            if($.trim($(element).val()) ==""){
+                                $(element).addClass("is-invalid");
+                                $(element).parent().append("<div class='invalid-feedback'>This field can't be Empty</div>");
+                                $_is_valid=true;
+                            }
+                            else{
+                                $(element).removeClass("is-invalid");
+                                $(element).parent().find(".invalid-feedback").remove();
+                            }
                         }
+
                         break;
                     case "password":
 
 
-                        if(!window.App.fnValidarContrasenia($(element).val())){
-                             $(element).addClass("is-invalid");
-                            $(element).parent().append("<div class='invalid-feedback'>The password format is invalid</div>");
-                            $_is_valid=true;
-                        }else{
-                            $(element).removeClass("is-invalid");
-                            $(element).parent().find(".invalid-feedback").remove();
+                        if($_not_valid_field){
+                            for(var i in not_valid){
+                                if($(element).attr('id') == not_valid[i]){
+                                    $flag = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                         if(!$flag){
+
+                            if(!window.App.fnValidarContrasenia($(element).val())){
+                                $(element).addClass("is-invalid");
+                                $(element).parent().append("<div class='invalid-feedback'>The password format is invalid</div>");
+                                $_is_valid=true;
+                            }else{
+                                $(element).removeClass("is-invalid");
+                                $(element).parent().find(".invalid-feedback").remove();
+                            }
                         }
                         break;
 
@@ -85,7 +118,7 @@ window.App={
             });
 
         } catch (error) {
-            toastr.error($e.message);
+            toastr.error(error.message);
         }
 
         return $_is_valid;
@@ -153,6 +186,8 @@ window.App={
 
           // Selecciona el contenido del campo
           aux.select();
+
+          aux.focus();
 
           // Copia el texto seleccionado
           document.execCommand("copy");

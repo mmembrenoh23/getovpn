@@ -20,7 +20,7 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::all();
+            $users = User::all()->where("id","<>",Auth::guard('admin')->user()->id );
         LogsApplication::dispatch("UserController","index-show"," View all users",Auth::guard('admin')->user()->id);
 
          return view("admin.config.users.users",['users'=>$users]);
@@ -155,7 +155,10 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+
+        $user = User::find($id);
+
+        return view("admin.config.users.user-profile",['user'=>$user]);
     }
 
     /**
@@ -169,6 +172,7 @@ class UserController extends Controller
     {
         if(request()->ajax()){
             try {
+
                 $user = User::find($id);
 
                 $data = ["first_name"=>$request->get("txtFirstNameE"),
@@ -176,37 +180,61 @@ class UserController extends Controller
                     "email"=>$request->get("txtEmailE"),
                     "password"=>$request->get("txtPasswordE")];
 
+
                 $flag=false;
 
-                foreach($data as $key =>$val){
+                $exist_email = false;
+                $email="";
 
-                    if($user->$key != $val){
-                        $user->$key = $val;
+                foreach ($data as $key =>$val) {
+
+                    if (!empty($val) && $user->$key != $val) {
+
+                        //check if the email exists
+                        if ($key =='email') {
+                            if (User::where('email', $val)->exists()) {
+                                $exist_email = true;
+                                 $email=$val;
+                                continue;
+                            }
+                        }
+
+                        if ($key =='password') {
+                            $user->$key = Hash::make($val);
+                        } else {
+                            $user->$key = $val;
+                        }
 
                         $flag = true;
+
+
                     }
                 }
 
-                if($flag){
-                    if($user->save()){
+                if ($exist_email) {
+                        LogsApplication::dispatch("UserController","update","There's another user with the same email $email",
+                        Auth::guard('admin')->user()->id);
+
+                        return response()->json(['message'=>"There's another user with the same email",'error'=>1]);
+                }
+
+                if ($flag) {
+                    if ($user->save()) {
                         LogsApplication::dispatch("UserController","update","The user data was updated. user id = $id",
                         Auth::guard('admin')->user()->id);
 
                         return response()->json(['message'=>"The user data was updated",'error'=>0]);
-                    }
-                    else{
+                    } else {
                         $message ="An error was occurred when try to update the user data <br>".$request->get("txtFirstNameE")."<br>";
                         $message .=$request->get("txtLastNameE")."<br>";
                         $message .=$request->get("txtEmailE")."<br>";
-                        LogsApplication::dispatch("UserController","update",$message,
-                        Auth::guard('admin')->user()->id);
+                        LogsApplication::dispatch("UserController","update",$message, Auth::guard('admin')->user()->id);
 
                         return response()->json(['message'=>"An error was occurred when try to update the user data",'error'=>1]);
                     }
-                }
-                else{
+                } else {
                     $message ="There's no data to update";
-                    LogsApplication::dispatch("UserController",$message,
+                    LogsApplication::dispatch("UserController","update",$message,
                     Auth::guard('admin')->user()->id);
 
                     return response()->json(['message'=>"There's no data to update",'error'=>1]);
@@ -220,7 +248,7 @@ class UserController extends Controller
 
                 LogsApplication::dispatch("UserController","update",$message,Auth::guard('admin')->user()->id);
 
-                throw new \App\Exceptions\AdminException($th->getMessage());
+                return response()->json(['message'=>$th->getMessage(),'error'=>1]);
             }
         }
     }
@@ -233,6 +261,83 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if (request()->ajax()) {
+            try {
+
+                $exist = User::where('id',$id)->exists();
+
+                if (!$exist) {
+                    LogsApplication::dispatch("UserController","destroy","The user not exists $id",Auth::guard('admin')->user()->id);
+                    return response()->json(['message'=>"The user not exists",'error'=>1]);
+                }
+
+                $user = User::find($id);
+
+                if ($user->is_active) {
+                    $user->is_active = 0;
+                } else {
+                    $user->is_active = 1;
+                }
+
+                if ($user->save()) {
+                    LogsApplication::dispatch("UserController", "destroy", "The user $id was inactived", Auth::guard('admin')->user()->id);
+
+                        return response()->json(['message'=>"The user was inactived",'error'=>0,'title'=> ($user->is_active == 1)?"Activated!":"Inactivated!"]);
+                } else {
+                    $message ="An error was occurred when try to update the user status $id";
+                     LogsApplication::dispatch("UserController","destroy",$message, Auth::guard('admin')->user()->id);
+
+                        return response()->json(['message'=>"An error was occurred when try to update the user status",
+                        'error'=>1
+                        ]);
+                }
+
+
+            } catch (\Throwable $th) {
+                $message=serialize(["line"=>$th->getLine(),
+                      "file"=>$th->getFile(),
+                    "message"=>$th->getMessage()]);
+
+                LogsApplication::dispatch("UserController","destroy",$message,Auth::guard('admin')->user()->id);
+
+                return response()->json(['message'=>$th->getMessage(),'error'=>1]);
+            }
+       }
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id
+     * @return void
+     */
+    public function changePass($id, Request $request) {
+        if (request()->ajax()) {
+            $exist = User::where('id', $id)->exists();
+            if (!$exist) {
+                LogsApplication::dispatch("UserController", "changePass", "The user not exists $id", Auth::guard('admin')->user()->id);
+                return response()->json(['message'=>"The user not exists",'error'=>1]);
+            }
+
+            $user =User::find($id);
+
+            if (!\Str::of($user->password)->contains($request->get("txtPassword"))) {
+                $user->password =Hash::make($request->get("txtPassword"));
+
+                if ($user->save()) {
+                    LogsApplication::dispatch("UserController", "changePass", "The user was changes his password", Auth::guard('admin')->user()->id);
+
+                            return response()->json(['message'=>"Update was made it",'error'=>0,'title'=> ($user->is_active == 1)?"Activated!":"Inactivated!"]);
+                } else {
+                    $message ="An error was occurred when try to update the user status $id";
+                    LogsApplication::dispatch("UserController","changePass",$message, Auth::guard('admin')->user()->id);
+
+                    return response()->json(['message'=>"An error was occurred when try to update the user password",
+                            'error'=>1
+                            ]);
+                }
+            }
+
+        }
     }
 }

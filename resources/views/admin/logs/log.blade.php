@@ -1,6 +1,6 @@
 @extends('shared.app')
 
-@section('title', "Logs")
+@section('title_site', "Logs")
 
 
 @section('htmlheader')

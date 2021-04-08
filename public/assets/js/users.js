@@ -32,12 +32,56 @@ App.confi_data_table ={
                         });
 
                     } catch (error) {
-
+                        toastr.error(error.message);
                     }
 
                 }).on("click","#btnDelete",function(e){
                     e.preventDefault();
+                    var _route = $(this).data('route');
+                    console.log(_route)
+                     swal({
+                            title: 'Are you sure?',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, inactive it!'
+                        }).then(function () {
 
+
+                            try {
+                                App._urlToSend=_route;
+
+                                var _formData = new FormData();
+                                _formData.append("_method","DELETE");
+                                App._data=_formData;
+                                App._method="POST";
+
+                                $.when(App.fnSendData()).done(function($_result){
+                                    try {
+                                        if($_result.error == 1){
+                                            toastr.error($_result.message);
+                                        }
+                                        else{
+                                            swal($_result.title, $_result.message, 'success')
+                                            setTimeout(() => {
+                                                    window.location="/config/users";
+                                            }, 3000);
+                                        }
+
+                                    } catch (error) {
+                                        toastr.error(error.message);
+                                    }
+
+                                });
+
+                            } catch (error) {
+                                toastr.error(error.message);
+
+                            }
+
+
+                        }).catch(swal.noop)
                 })
             },
             "language": {

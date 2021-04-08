@@ -45,7 +45,7 @@ return [
             'driver' => 'token',
             'provider' => 'users',
             'hash' => false,
-        ],
+        ]
     ],
 
     /*
@@ -70,6 +70,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Model\User::class,
         ],
+
 
         // 'users' => [
         //     'driver' => 'database',

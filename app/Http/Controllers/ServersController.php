@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\File;
 use App\Exceptions\AdminException;
 use Browser;
 
+
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendEmail;
+
 use App\Model\Servers;
 use App\Model\Server;
 
@@ -103,6 +107,15 @@ class ServersController extends Controller
 
                     LogsApplication::dispatch("ServersController","generetSecret","Secret $token saved at file: {$file->name} ",Auth::guard('admin')->user()->id);
 
+                     $url=Str::of(route('voip-file-download',['secret'=>$token]))->replace('%24','$');
+
+                     if(!empty($file->owner)){
+                         Mail::to($file->owner)
+                             ->send(new SendEmail(['url'=>$url,'secret'=>$token],"Secret key generated","emails.admin.email-secret"));
+                     }
+                     else{
+                          LogsApplication::dispatch("ServersController","generetSecret","We cannot sent an email, the file doesn't have owner ",Auth::guard('admin')->user()->id);
+                     }
                     return response()->json([
                         "error"=>0,
                         "message"=>"The secret was created",
@@ -124,7 +137,7 @@ class ServersController extends Controller
 
                 LogsApplication::dispatch("ServersController","generetSecret",$message,Auth::guard('admin')->user()->id);
 
-                throw new AdminException($th->getMessage());
+                throw new Exception($th->getMessage());
             }
         }
     }
@@ -162,17 +175,23 @@ class ServersController extends Controller
 
                  \Log::Info("ID $file_id");
 
-                 \Log::Info("secret {$file_server->secret}");
-
                 if($file_server->secret != null){
-                    $file_path=$file_server->url_download = route('voip-file-download',['secret'=>$file_server->secret]);
+
+                     \Log::Info("secret {$file_server->secret}");
+
+                    $file_path=$file_server->url_download = Str::of(route('voip-file-download',['secret'=>$file_server->secret]))->replace('%24','$');
+
+                    \Log::Info("file path {$file_path}");
+
                     $file_server->save();
 
-                     LogsApplication::dispatch("ServersController","generateLink","Link to download file was generated. ".(route('voip-file-download',['secret'=>$file_server->secret])),Auth::guard('admin')->user()->id);
-                    return response()->json([
+                     LogsApplication::dispatch("ServersController","generateLink","Link to download file was generated. $file_path",Auth::guard('admin')->user()->id);
+
+                    \Log::Info("file path {$file_path}");
+                     return response()->json([
                         "error"=>0,
                         "message"=>'The link to download the file was generated',
-                        "url_download"=>$file_path
+                        "url_download"=>"{$file_path}"
                     ]);
                 }
 

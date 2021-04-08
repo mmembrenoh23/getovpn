@@ -15,15 +15,12 @@ use Illuminate\Support\Facades\Route;
 
 
 Auth::routes();
-Route::get('/', 'Auth\LoginController@showLoginForm');
+Route::get('/', 'Auth\LoginController@showLoginForm')->name("login-main");
 Route::post('loginuser', 'Auth\LoginController@adminLogin')->name('loginuser');
 
 Route::get('voip-file/{secret}',"DownloadController@downloadFile")->name('voip-file-download');
 
 
-Route::get('forgot-password', function(){
-    return view("authentication.forgot-password");
-})->name('forgot-password');
 
 Route::middleware(['auth','preventBackHistory'])->group(function () {
     Route::get('logout', 'Auth\LoginController@logout')->name('logout');
@@ -49,6 +46,7 @@ Route::middleware(['auth','preventBackHistory'])->group(function () {
     })->name('config.server');
 
     Route::resource('config/users', 'UserController');
+    Route::post('config/users/{user}/password', 'UserController@changePass')->name('change-pass');
 
     Route::group(['prefix' => 'logs'], function () {
 
